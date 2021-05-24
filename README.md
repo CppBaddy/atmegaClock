@@ -12,5 +12,5 @@ Fine clock calibration can be achieved by changing daily/weekly correction value
 
 ![atmegaClock schematics](https://github.com/CppBaddy/atmegaClock/blob/main/schematics.png?raw=true)
 
-Original schematics and some pictures can be found ![here](https://easyeda.com/Yulay/atmega328p-clock_copy)
+Original schematics and some pictures can be found [here](https://easyeda.com/Yulay/atmega328p-clock_copy)
 
