@@ -1,4 +1,4 @@
-CC=avr-gcc
+CC=avr-g++
 
 DEVICE=328p
 
@@ -9,7 +9,9 @@ LFUSE=0x62
 # Device Signature
 # ATmega8a 0x1E 0x93 0x07
 
-CFLAGS=-g -std=c11 -Os -Wall -mcall-prologues -mmcu=atmega$(DEVICE) -DF_CPU=1000000
+CPPFLAGS += -std=c++11
+CFLAGS=-g -Os -Wall -mcall-prologues -mmcu=atmega$(DEVICE) -DF_CPU=1000000
+#CFLAGS=-g -std=c11 -Os -Wall -mcall-prologues -mmcu=atmega$(DEVICE) -DF_CPU=1000000
 ## Use short (8-bit) data types
 CFLAGS += -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums
 

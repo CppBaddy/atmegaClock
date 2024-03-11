@@ -10,7 +10,7 @@
 // with automatic brightness control and power saving modes
 // for backup Li-ion 18600 type battery.
 // Display TM1637 7-segment LED i2c module
-// Fine clock calibration can be achieved by changing correction values in code.
+// Fine clock calibration can be achieved by changing clock correction value.
 
 /*
 Running on internal 8 MHz clock
@@ -30,7 +30,11 @@ PD5 : Snoose
 PD6 : Alarm Clock Set Mode
 PD7 : Alarm On/Off
 
+PC1 : Speaker_N output
+PC2 : Speaker_P output
 PC3 : Power Control TM1637
+
+Timer0 1000000 Hz / 256
 
 Timer1 1000000 Hz / 256 / 32 = ~122 Hz
 
@@ -69,8 +73,19 @@ Timer2 1 Hz
 
 #define INPUT_AVERAGING 5
 
-#define RESET_SECS	(_BV(INC_M_IN) | _BV(INC_H_IN))
+#define kInputTime  _BV(TIME_IN)
+#define kInputAlarm  _BV(ALARM_IN)
+#define kInputSnoose  _BV(SNOOSE_IN)
 
+#define kCmdMask    (kInputTime | kInputAlarm | kInputSnoose)
+
+#define kInputMinutes  _BV(INC_M_IN)
+#define kInputHours  _BV(INC_H_IN)
+#define kResetSecs	(kInputMinutes | kInputHours)
+
+
+#define SPEAKER_N       PC1
+#define SPEAKER_P       PC2
 #define POWER_TM1637	PC3
 
 #define ADC_VREF_VCC        0                           // Vcc as voltage reference
@@ -90,10 +105,22 @@ Timer2 1 Hz
 #define BATTERY_NORMAL			87 // 3.9V
 #define BATTERY_DISCHARGING		83 // 3.7V
 
+enum Notes // First Octave
+{
+    noteC4  = 239, // 261.63 Hz
+    noteD4  = 213, // 293.66,
+    noteE4  = 190, // 329.63,
+    noteF4  = 179, // 349.23,
+    noteG4  = 156, // 392.00,
+    noteA4  = 142, // 440.00,
+    noteB4  = 127, // 493.88
+};
 
 void Setup();
 
 void DisplayTime();
+void DisplayAlarm();
+void DisplayClockCorrection();
 
 
 inline void Timer1_Enable()
@@ -165,17 +192,17 @@ inline void Display_Shutdown()
 
 inline uint8_t Buttons_Read()
 {
-	return (~PIND) & 0xfc;
+	return (~PIND) & 0xfc; //negative logic
 }
 
 inline void Display_On()
 {
-	PORTC |= _BV(PC3);
+	PORTC |= _BV(POWER_TM1637);
 }
 
 inline void Display_Off()
 {
-	PORTC &= ~_BV(PC3);
+	PORTC &= ~_BV(POWER_TM1637);
 }
 
 inline void SetLED(bool v)
@@ -193,6 +220,23 @@ inline void SetLED(bool v)
 inline void ToggleLED()
 {
 	PINB |= _BV(PORTB5); //toggle output port
+}
+
+inline void Speaker_On()
+{
+    TIMSK0 |= _BV(OCIE0A) | _BV(OCIE0B);
+}
+
+inline void Speaker_Off()
+{
+    TIMSK0 &= ~(_BV(OCIE0A) | _BV(OCIE0B));
+    PORTC &= ~(_BV(SPEAKER_N) | _BV(SPEAKER_P));
+}
+
+inline void Speaker_Freq(uint8_t note)
+{
+    OCR0A = note;
+    OCR0B = note/2;
 }
 
 

@@ -92,6 +92,8 @@ void TM1637_display_segments(const uint8_t position, const uint8_t segments);
  */
 void TM1637_display_digit(const uint8_t position, const uint8_t digit);
 
+void TM1637_display_char(const uint8_t position, const uint8_t c);
+
 /**
  * Display colon on/off.
  * value: 1 - on, 0 - off

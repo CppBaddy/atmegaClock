@@ -53,7 +53,9 @@ PROGMEM const uint8_t _digit2segments[] =
 	0x7D, // 6
 	0x07, // 7
 	0x7F, // 8
-	0x6F  // 9
+	0x6F, // 9
+	0x39, // C
+	0x40, // -
 };
 
 void I2C_Enable()
@@ -98,7 +100,8 @@ void TM1637_display_digit(const uint8_t position, const uint8_t digit)
 {
 	uint8_t segments = (digit < 10 ? pgm_read_byte_near((uint8_t *)&_digit2segments + digit) : 0x00);
 
-	if (position == 0x01) {
+	if (position == 0x01)
+	{
 		segments = segments | (_segments & 0x80);
 		_segments = segments;
 	}
@@ -106,12 +109,27 @@ void TM1637_display_digit(const uint8_t position, const uint8_t digit)
 	TM1637_display_segments(position, segments);
 }
 
+void TM1637_display_char(const uint8_t position, const uint8_t c)
+{
+    uint8_t segments = (c < 12 ? pgm_read_byte_near((uint8_t *)&_digit2segments + c) : 0x00);
+
+    if (position == 0x01)
+    {
+        segments = segments | (_segments & 0x80);
+        _segments = segments;
+    }
+
+    TM1637_display_segments(position, segments);
+}
+
 void TM1637_display_colon(const uint8_t value)
 {
-
-	if (value) {
+	if (value)
+	{
 		_segments |= 0x80;
-	} else {
+	}
+	else
+	{
 		_segments &= ~0x80;
 	}
 	TM1637_display_segments(0x01, _segments);
@@ -121,7 +139,8 @@ void TM1637_clear(void)
 {
 	uint8_t i;
 
-	for (i = 0; i < TM1637_POSITION_MAX; ++i) {
+	for (i = 0; i < TM1637_POSITION_MAX; ++i)
+	{
 		TM1637_display_segments(i, 0x00);
 	}
 }
