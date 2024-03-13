@@ -234,6 +234,11 @@ inline void Speaker_Off()
     PORTC &= ~(_BV(SPEAKER_N) | _BV(SPEAKER_P));
 }
 
+inline void Speaker_Toggle()
+{
+    PINC = _BV(SPEAKER_N) | _BV(SPEAKER_P); //toggle outputs
+}
+
 inline void Speaker_Freq(uint8_t note)
 {
     OCR0A = note;
