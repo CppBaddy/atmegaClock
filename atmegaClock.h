@@ -225,6 +225,7 @@ inline void ToggleLED()
 inline void Speaker_On()
 {
     TIMSK0 |= _BV(OCIE0A) | _BV(OCIE0B);
+    PORTC |= _BV(SPEAKER_P);
 }
 
 inline void Speaker_Off()

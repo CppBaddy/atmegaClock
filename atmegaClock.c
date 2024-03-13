@@ -150,14 +150,12 @@ ISR( TIMER2_OVF_vect ) //wakes up each second
 
 ISR( TIMER0_COMPA_vect ) //notes driver (second octave)
 {
-    PORTC |= _BV(SPEAKER_N);
-    PORTC &= ~_BV(SPEAKER_P);
+    PINC = _BV(SPEAKER_N) | _BV(SPEAKER_P); //toggle outputs
 }
 
 ISR( TIMER0_COMPB_vect ) //notes driver (second octave)
 {
-    PORTC |= _BV(SPEAKER_P);
-    PORTC &= ~_BV(SPEAKER_N);
+    PINC = _BV(SPEAKER_N) | _BV(SPEAKER_P); //toggle outputs
 }
 
 // ADC interrupt service routine
